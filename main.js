@@ -12,7 +12,8 @@
   function g1024() {
     var self = this;
     self.config = {};
-    self.points = [];
+    self.points= window.points = [];
+    self.emptyPoints=window.emptyPoints = [];
 
     self.init = function(cfg) {
       S.mix(self.config, cfg);
@@ -31,6 +32,10 @@
             y: 10*(i+1) + 120*i,
             val: ''
           });
+          self.emptyPoints.push({
+            x: 10*(j+1) + 80*j,
+            y: 10*(i+1) + 120*i
+          });
         }
       }
     }
@@ -47,9 +52,16 @@
     };
 
     self._drawRandomBlock = function() {
-      var length = self.points.length;
+      var points = self.emptyPoints;
+      var length = points.length;
+      if(length === 0) {
+        alert('end');
+        return;
+      }
       var rad = parseInt(Math.random()*length,10);
-      self._drawNumberBlock(self.points[rad].x,self.points[rad].y,2);
+      self._drawNumberBlock(points[rad].x,points[rad].y,2);
+      self._setPointVal(points[rad].x,points[rad].y,2)
+      self.emptyPoints.splice(rad,1);
     };
 
     self._drawNumberBlock = function(x, y, num) {
@@ -59,6 +71,16 @@
       ctx.fillStyle = 'Black';
       ctx.fillText(num, x+30,y+70);
     };
+
+    self._setPointVal = function(x, y, num) {
+      var points = self.points;
+      var length = points.length;
+      for(var i = 0; i < length; i++) {
+        if(points[i].x===x && points[i].y===y) {
+          self.points[i].val=num;
+        }
+      }
+    }
 
   }
 
